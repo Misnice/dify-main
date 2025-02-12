@@ -5,11 +5,12 @@ import ZoomInOut from './zoom-in-out'
 import Control from './control'
 
 export type OperatorProps = {
+  isViewMode: boolean
   handleUndo: () => void
   handleRedo: () => void
 }
 
-const Operator = ({ handleUndo, handleRedo }: OperatorProps) => {
+const Operator = ({ isViewMode, handleUndo, handleRedo }: OperatorProps) => {
   return (
     <>
       <MiniMap
@@ -23,8 +24,8 @@ const Operator = ({ handleUndo, handleRedo }: OperatorProps) => {
       />
       <div className='flex items-center mt-1 gap-2 absolute left-4 bottom-4 z-[9]'>
         <ZoomInOut />
-        <UndoRedo handleUndo={handleUndo} handleRedo={handleRedo} />
-        <Control />
+        {!isViewMode && <UndoRedo handleUndo={handleUndo} handleRedo={handleRedo} />}
+        {!isViewMode && <Control />}
       </div>
     </>
   )

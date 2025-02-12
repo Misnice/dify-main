@@ -91,6 +91,8 @@ type Shape = {
   setNodeAnimation: (nodeAnimation: boolean) => void
   isRestoring: boolean
   setIsRestoring: (isRestoring: boolean) => void
+  isViewMode: boolean
+  setIsViewMode: (isViewMode: boolean) => void
   debouncedSyncWorkflowDraft: (fn: () => void) => void
   buildInTools: ToolWithProvider[]
   setBuildInTools: (tools: ToolWithProvider[]) => void
@@ -221,6 +223,8 @@ export const createWorkflowStore = () => {
     setNodeAnimation: nodeAnimation => set(() => ({ nodeAnimation })),
     isRestoring: false,
     setIsRestoring: isRestoring => set(() => ({ isRestoring })),
+    isViewMode: false,
+    setIsViewMode: isViewMode => set(() => ({ isViewMode })),
     debouncedSyncWorkflowDraft: debounce((syncWorkflowDraft) => {
       syncWorkflowDraft()
     }, 5000),

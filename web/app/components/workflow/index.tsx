@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react'
+import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
 import { setAutoFreeze } from 'immer'
 import {
@@ -115,6 +116,7 @@ const Workflow: FC<WorkflowProps> = memo(({
   edges: originalEdges,
   viewport,
 }) => {
+  const searchParams = useSearchParams()
   const workflowContainerRef = useRef<HTMLDivElement>(null)
   const workflowStore = useWorkflowStore()
   const reactflow = useReactFlow()
@@ -126,7 +128,9 @@ const Workflow: FC<WorkflowProps> = memo(({
   const nodeAnimation = useStore(s => s.nodeAnimation)
   const showConfirm = useStore(s => s.showConfirm)
   const showImportDSLModal = useStore(s => s.showImportDSLModal)
+  const setIsViewMode = useStore(s => s.setIsViewMode)
 
+  const mode = searchParams.get('mode')
   const {
     setShowConfirm,
     setControlPromptEditorRerenderKey,
@@ -166,6 +170,10 @@ const Workflow: FC<WorkflowProps> = memo(({
     if (v.type === DSL_EXPORT_CHECK)
       setSecretEnvList(v.payload.data as EnvironmentVariable[])
   })
+
+  useEffect(() => {
+    setIsViewMode(mode === 'view')
+  }, [mode])
 
   useEffect(() => {
     setAutoFreeze(false)
@@ -288,15 +296,18 @@ const Workflow: FC<WorkflowProps> = memo(({
     >
       <SyncingDataModal />
       <CandidateNode />
-      <Header />
-      <Panel />
-      <Operator handleRedo={handleHistoryForward} handleUndo={handleHistoryBack} />
-      {
-        showFeaturesPanel && <Features />
-      }
-      <PanelContextmenu />
-      <NodeContextmenu />
-      <HelpLine />
+      {mode !== 'view' && <>
+        <Header />
+        <Panel />
+        {
+          showFeaturesPanel && <Features />
+        }
+        <PanelContextmenu />
+        <NodeContextmenu />
+        <HelpLine />
+      </>}
+      <Operator isViewMode={mode === 'view'} handleRedo={handleHistoryForward} handleUndo={handleHistoryBack} />
+
       {
         !!showConfirm && (
           <Confirm
